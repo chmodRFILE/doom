@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Detailansicht - Web Crawling System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1><i class="fas fa-eye"></i> Detailansicht</h1>
+        <p class="lead">{{ url }}</p>
+        
+        {% if data %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title">Indizierte Daten</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Titel:</strong> {{ data.title or 'Nicht verfügbar' }}</p>
+                        <p><strong>Beschreibung:</strong> {{ data.description or 'Nicht verfügbar' }}</p>
+                        <p><strong>Keywords:</strong> {{ data.keywords or 'Nicht verfügbar' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Crawl-Datum:</strong> {{ data.crawl_date or 'Nicht verfügbar' }}</p>
+                        <p><strong>URL:</strong> {{ data.url or 'Nicht verfügbar' }}</p>
+                    </div>
+                </div>
+                
+                <h6 class="mt-3">Kontaktinformationen</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p><strong>Telefonnummern:</strong></p>
+                        {% if data.phone_numbers %}
+                            <ul>
+                                {% for phone in data.phone_numbers.split(',') %}
+                                    <li>{{ phone.strip() }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>Nicht verfügbar</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>E-Mail-Adressen:</strong></p>
+                        {% if data.email_addresses %}
+                            <ul>
+                                {% for email in data.email_addresses.split(',') %}
+                                    <li>{{ email.strip() }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>Nicht verfügbar</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Usernames:</strong></p>
+                        {% if data.usernames %}
+                            <ul>
+                                {% for username in data.usernames.split(',') %}
+                                    <li>{{ username.strip() }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>Nicht verfügbar</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Crawling-Status</h5>
+            </div>
+            <div class="card-body">
+                {% if status %}
+                    <p><strong>Status:</strong> 
+                        <span class="badge bg-{% if status.status == 'completed' %}success{% elif status.status == 'failed' %}danger{% else %}warning{% endif %}">
+                            {{ status.status }}
+                        </span>
+                    </p>
+                    <p><strong>Letztes Crawling:</strong> {{ status.last_crawled }}</p>
+                {% else %}
+                    <p>Kein Status verfügbar.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i> Keine Daten für diese URL gefunden.
+        </div>
+        {% endif %}
+        
+        <div class="mt-3">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Zurück zur Übersicht</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

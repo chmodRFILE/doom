@@ -1,0 +1,10 @@
+{
+    "max_workers": 5,
+    "timeout": 30,
+    "delay_between_requests": 1,
+    "user_agent": "WebCrawler/1.0",
+    "proxy_rotation": true,
+    "use_fallback": true,
+    "max_retries": 3,
+    "proxy_list": []
+}

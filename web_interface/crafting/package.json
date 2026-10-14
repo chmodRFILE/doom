@@ -1,0 +1,13 @@
+{
+  "name": "crafting-system",
+  "version": "1.0.0",
+  "description": "Crafting system for webserver with spider recipes",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["crafting", "spider", "game", "web"],
+  "author": "WebServer Team",
+  "license": "MIT"
+}

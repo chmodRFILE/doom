@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crawler Management Table - Doom Web Interface</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/crawler_table/static/css/crawler_styles.css">
+    <style>
+        /* Additional custom styles */
+        .crawler-frame {
+            border: 3px solid #2c3e50;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1a2530 0%, #0d1520 100%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .crawler-header {
+            background: linear-gradient(to right, #2c3e50, #3498db, #2c3e50);
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .crawler-footer {
+            background: linear-gradient(to right, #0d1520, #1a2530);
+            color: #bdc3c7;
+            padding: 15px;
+            border-radius: 0 0 8px 8px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        .crawler-button {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: #ecf0f1;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .crawler-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.7);
+        }
+        
+        .crawler-card {
+            background: rgba(44, 62, 80, 0.7);
+            border: 1px solid #3498db;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .crawler-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.5);
+            background: rgba(44, 62, 80, 0.9);
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .status-inactive {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .status-running {
+            background: linear-gradient(45deg, #f39c12, #d35400);
+            color: white;
+        }
+        
+        .priority-high {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .priority-medium {
+            background: linear-gradient(45deg, #f39c12, #d35400);
+            color: white;
+        }
+        
+        .priority-low {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .crawler-progress {
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            background: #333;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            transition: width 0.5s ease;
+        }
+        
+        .crawler-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="bg-dark text-white">
+    <!-- Main Crawler Management Frame -->
+    <div id="crawlerManagementFrame" class="crawler-frame">
+        <div class="crawler-header">
+            <h1><i class="fas fa-spider"></i> CRAWLER MANAGEMENT TABLE</h1>
+            <p>DOOM WEBSITE - MANAGE YOUR WEB CRAWLERS</p>
+        </div>
+        
+        <!-- Main Interface -->
+        <div class="container-fluid p-3">
+            <!-- Crawler Stats Overview -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card bg-secondary">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-line"></i> CRAWLER STATISTICS</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <div class="card bg-dark">
+                                        <div class="card-body">
+                                            <h3 id="totalCrawlers" class="text-primary">0</h3>
+                                            <p>Total Crawlers</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <div class="card bg-dark">
+                                        <div class="card-body">
+                                            <h3 id="activeCrawlers" class="text-success">0</h3>
+                                            <p>Active Crawlers</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <div class="card bg-dark">
+                                        <div class="card-body">
+                                            <h3 id="runningCrawlers" class="text-warning">0</h3>
+                                            <p>Running Crawlers</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <div class="card bg-dark">
+                                        <div class="card-body">
+                                            <h3 id="totalPages" class="text-info">0</h3>
+                                            <p>Pages Crawled</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Crawler Controls -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card bg-secondary">
+                        <div class="card-header">
+                            <h5><i class="fas fa-tools"></i> CRAWLER CONTROLS</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap justify-content-center gap-2">
+                                <button id="refreshBtn" class="crawler-button" onclick="refreshCrawlers()">
+                                    <i class="fas fa-sync-alt"></i> REFRESH
+                                </button>
+                                <button id="addCrawlerBtn" class="crawler-button" onclick="showAddCrawlerForm()">
+                                    <i class="fas fa-plus-circle"></i> ADD CRAWLER
+                                </button>
+                                <button id="startAllBtn" class="crawler-button" onclick="startAllCrawlers()">
+                                    <i class="fas fa-play-circle"></i> START ALL
+                                </button>
+                                <button id="stopAllBtn" class="crawler-button" onclick="stopAllCrawlers()">
+                                    <i class="fas fa-stop-circle"></i> STOP ALL
+                                </button>
+                                <button id="exportBtn" class="crawler-button" onclick="exportCrawlers()">
+                                    <i class="fas fa-file-export"></i> EXPORT
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Crawler List -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card bg-secondary">
+                        <div class="card-header">
+                            <h5><i class="fas fa-list"></i> ACTIVE CRAWLERS</h5>
+                        </div>
+                        <div class="card-body" id="crawlerListContainer">
+                            <!-- Crawlers will be loaded here -->
+                            <div class="text-center">
+                                <p>Loading crawlers...</p>
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add Crawler Form (Hidden by default) -->
+            <div id="addCrawlerForm" class="row mb-4" style="display: none;">
+                <div class="col-12">
+                    <div class="card bg-secondary">
+                        <div class="card-header">
+                            <h5><i class="fas fa-plus"></i> ADD NEW CRAWLER</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="crawlerForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="crawlerName" class="form-label">Crawler Name</label>
+                                        <input type="text" class="form-control" id="crawlerName" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="crawlerType" class="form-label">Crawler Type</label>
+                                        <select class="form-select" id="crawlerType" required>
+                                            <option value="web">Web Crawler</option>
+                                            <option value="image">Image Crawler</option>
+                                            <option value="api">API Crawler</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="crawlerUrl" class="form-label">Target URL</label>
+                                        <input type="url" class="form-control" id="crawlerUrl" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="crawlerFrequency" class="form-label">Frequency</label>
+                                        <input type="text" class="form-control" id="crawlerFrequency" placeholder="e.g., 30s, 5m, 1h">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="crawlerMaxDepth" class="form-label">Max Depth</label>
+                                        <input type="number" class="form-control" id="crawlerMaxDepth" value="5">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="crawlerMaxPages" class="form-label">Max Pages</label>
+                                        <input type="number" class="form-control" id="crawlerMaxPages" value="100">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="crawlerPriority" class="form-label">Priority</label>
+                                        <select class="form-select" id="crawlerPriority">
+                                            <option value="high">High</option>
+                                            <option value="medium" selected>Medium</option>
+                                            <option value="low">Low</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label for="crawlerTags" class="form-label">Tags (comma separated)</label>
+                                        <input type="text" class="form-control" id="crawlerTags" placeholder="web, general, data">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-secondary" onclick="hideAddCrawlerForm()">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Add Crawler</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Crawler Status -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card bg-secondary">
+                        <div class="card-header">
+                            <h5><i class="fas fa-tachometer-alt"></i> CRAWLER STATUS</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="crawlerStatus" class="text-center">
+                                <p>Ready to manage crawlers!</p>
+                                <div class="crawler-progress">
+                                    <div class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="crawler-footer">
+            <p>CRAWLER MANAGEMENT SYSTEM v1.0 | DOOM WEBSITE FRAMEWORK</p>
+            <p>© 2024 Doom Web Interface - All Rights Reserved</p>
+        </div>
+    </div>
+
+    <!-- Hidden Frame for Crawler Results -->
+    <iframe id="crawlerResultFrame" style="display:none;" src=""></iframe>
+
+    <!-- JavaScript for DOM Manipulation and Classes -->
+    <script>
+        // Crawler Management Class
+        class CrawlerManagementSystem {
+            constructor() {
+                this.crawlers = [];
+                this.stats = {};
+                this.init();
+            }
+
+            init() {
+                this.loadCrawlers();
+                this.renderStats();
+                this.setupEventListeners();
+            }
+
+            async loadCrawlers() {
+                try {
+                    const response = await fetch('/crawler/crawlers/active');
+                    const data = await response.json();
+                    if (data.success) {
+                        this.crawlers = data.data;
+                        this.renderCrawlers();
+                    }
+                } catch (error) {
+                    console.error('Error loading crawlers:', error);
+                    document.getElementById('crawlerListContainer').innerHTML = 
+                        '<p class="text-danger">Failed to load crawlers</p>';
+                }
+            }
+
+            renderCrawlers() {
+                const container = document.getElementById('crawlerListContainer');
+                if (!container) return;
+
+                if (this.crawlers.length === 0) {
+                    container.innerHTML = '<p class="text-muted">No active crawlers found</p>';
+                    return;
+                }
+
+                let html = '';
+                this.crawlers.forEach(crawler => {
+                    const statusClass = crawler.status === 'active' ? 'status-active' : 
+                                      crawler.status === 'running' ? 'status-running' : 'status-inactive';
+                    const priorityClass = `priority-${crawler.priority}`;
+                    
+                    html += `
+                        <div class="crawler-card">
+                            <h5>${crawler.name}</h5>
+                            <p><strong>Type:</strong> ${crawler.type}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="status-badge ${statusClass}">${crawler.status.toUpperCase()}</span>
+                            </p>
+                            <p><strong>URL:</strong> ${crawler.url}</p>
+                            <p><strong>Frequency:</strong> ${crawler.frequency}</p>
+                            <p><strong>Priority:</strong> 
+                                <span class="status-badge ${priorityClass}">${crawler.priority.toUpperCase()}</span>
+                            </p>
+                            <p><strong>Max Depth:</strong> ${crawler.maxDepth} | <strong>Max Pages:</strong> ${crawler.maxPages}</p>
+                            
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                <button class="btn btn-sm btn-success" onclick="startCrawler('${crawler.id}')">
+                                    <i class="fas fa-play"></i> Start
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="stopCrawler('${crawler.id}')">
+                                    <i class="fas fa-stop"></i> Stop
+                                </button>
+                                <button class="btn btn-sm btn-info" onclick="viewCrawlerStats('${crawler.id}')">
+                                    <i class="fas fa-chart-bar"></i> Stats
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="editCrawler('${crawler.id}')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCrawler('${crawler.id}')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            renderStats() {
+                const total = this.crawlers.length;
+                const active = this.crawlers.filter(c => c.status === 'active').length;
+                const running = this.crawlers.filter(c => c.status === 'running').length;
+                const totalPages = this.crawlers.reduce((sum, c) => sum + (c.stats?.pagesCrawled || 0), 0);
+                
+                document.getElementById('totalCrawlers').textContent = total;
+                document.getElementById('activeCrawlers').textContent = active;
+                document.getElementById('runningCrawlers').textContent = running;
+                document.getElementById('totalPages').textContent = totalPages;
+            }
+
+            setupEventListeners() {
+                // Add form submission
+                const form = document.getElementById('crawlerForm');
+                if (form) {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.addCrawler();
+                    });
+                }
+            }
+
+            async addCrawler() {
+                try {
+                    const crawlerData = {
+                        name: document.getElementById('crawlerName').value,
+                        type: document.getElementById('crawlerType').value,
+                        url: document.getElementById('crawlerUrl').value,
+                        frequency: document.getElementById('crawlerFrequency').value,
+                        maxDepth: parseInt(document.getElementById('crawlerMaxDepth').value),
+                        maxPages: parseInt(document.getElementById('crawlerMaxPages').value),
+                        priority: document.getElementById('crawlerPriority').value,
+                        tags: document.getElementById('crawlerTags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
+                    };
+
+                    const response = await fetch('/crawler/crawlers', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(crawlerData)
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert('Crawler added successfully!');
+                        this.loadCrawlers();
+                        this.hideAddCrawlerForm();
+                        document.getElementById('crawlerForm').reset();
+                    } else {
+                        alert('Error adding crawler: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error('Error adding crawler:', error);
+                    alert('Error adding crawler');
+                }
+            }
+
+            updateStatus(message) {
+                const statusElement = document.getElementById('crawlerStatus');
+                if (statusElement) {
+                    statusElement.innerHTML = `<p>${message}</p>`;
+                }
+            }
+
+            animateCrawling(duration) {
+                const progressFill = document.querySelector('.progress-fill');
+                if (!progressFill) return;
+                
+                progressFill.style.width = '0%';
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            progressFill.style.width = '0%';
+                        }, 500);
+                    } else {
+                        width += 2;
+                        progressFill.style.width = width + '%';
+                    }
+                }, duration / 50);
+            }
+
+            // Show/hide forms
+            showAddCrawlerForm() {
+                document.getElementById('addCrawlerForm').style.display = 'block';
+            }
+
+            hideAddCrawlerForm() {
+                document.getElementById('addCrawlerForm').style.display = 'none';
+            }
+
+            // Crawler actions
+            async startCrawler(id) {
+                try {
+                    const response = await fetch(`/crawler/crawlers/${id}/start`, {
+                        method: 'POST'
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        this.updateStatus(`Started crawler ${id}`);
+                        this.loadCrawlers();
+                    } else {
+                        alert('Error starting crawler: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error('Error starting crawler:', error);
+                    alert('Error starting crawler');
+                }
+            }
+
+            async stopCrawler(id) {
+                try {
+                    const response = await fetch(`/crawler/crawlers/${id}/stop`, {
+                        method: 'POST'
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        this.updateStatus(`Stopped crawler ${id}`);
+                        this.loadCrawlers();
+                    } else {
+                        alert('Error stopping crawler: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error('Error stopping crawler:', error);
+                    alert('Error stopping crawler');
+                }
+            }
+
+            viewCrawlerStats(id) {
+                // In a real implementation, this would show detailed stats
+                alert(`Viewing stats for crawler ${id}`);
+            }
+
+            editCrawler(id) {
+                // In a real implementation, this would open an edit form
+                alert(`Editing crawler ${id}`);
+            }
+
+            async deleteCrawler(id) {
+                if (confirm('Are you sure you want to delete this crawler?')) {
+                    try {
+                        const response = await fetch(`/crawler/crawlers/${id}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        const data = await response.json();
+                        if (data.success) {
+                            this.updateStatus(`Deleted crawler ${id}`);
+                            this.loadCrawlers();
+                        } else {
+                            alert('Error deleting crawler: ' + data.error);
+                        }
+                    } catch (error) {
+                        console.error('Error deleting crawler:', error);
+                        alert('Error deleting crawler');
+                    }
+                }
+            }
+
+            // Global actions
+            async refreshCrawlers() {
+                this.updateStatus('Refreshing crawlers...');
+                await this.loadCrawlers();
+                this.updateStatus('Crawlers refreshed!');
+            }
+
+            startAllCrawlers() {
+                this.updateStatus('Starting all crawlers...');
+                // In a real implementation, this would start all crawlers
+                alert('Starting all crawlers (simulated)');
+            }
+
+            stopAllCrawlers() {
+                this.updateStatus('Stopping all crawlers...');
+                // In a real implementation, this would stop all crawlers
+                alert('Stopping all crawlers (simulated)');
+            }
+
+            exportCrawlers() {
+                this.updateStatus('Exporting crawlers...');
+                // In a real implementation, this would export to file
+                alert('Exporting crawlers (simulated)');
+            }
+        }
+
+        // Global instance of crawler management system
+        let crawlerManagementSystem;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            crawlerManagementSystem = new CrawlerManagementSystem();
+            
+            // Set up frame attributes for the main crawler frame
+            const frame = document.getElementById('crawlerManagementFrame');
+            if (frame) {
+                frame.setAttribute('data-version', '1.0');
+                frame.setAttribute('data-framework', 'doom-web');
+                frame.setAttribute('data-crawler-type', 'management-table');
+                frame.setAttribute('data-interactive', 'true');
+                frame.setAttribute('data-path', '/crawler_table/templates/crawler_table.html');
+            }
+        });
+
+        // Global functions for DOM manipulation
+        function refreshCrawlers() {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.refreshCrawlers();
+            }
+        }
+
+        function showAddCrawlerForm() {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.showAddCrawlerForm();
+            }
+        }
+
+        function hideAddCrawlerForm() {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.hideAddCrawlerForm();
+            }
+        }
+
+        function startCrawler(id) {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.startCrawler(id);
+            }
+        }
+
+        function stopCrawler(id) {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.stopCrawler(id);
+            }
+        }
+
+        function viewCrawlerStats(id) {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.viewCrawlerStats(id);
+            }
+        }
+
+        function editCrawler(id) {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.editCrawler(id);
+            }
+        }
+
+        function deleteCrawler(id) {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.deleteCrawler(id);
+            }
+        }
+
+        function startAllCrawlers() {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.startAllCrawlers();
+            }
+        }
+
+        function stopAllCrawlers() {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.stopAllCrawlers();
+            }
+        }
+
+        function exportCrawlers() {
+            if (crawlerManagementSystem) {
+                crawlerManagementSystem.exportCrawlers();
+            }
+        }
+
+        // Frame attributes for the crawler result frame
+        function setupResultFrame() {
+            const resultFrame = document.getElementById('crawlerResultFrame');
+            if (resultFrame) {
+                resultFrame.setAttribute('name', 'crawlerResults');
+                resultFrame.setAttribute('title', 'Crawler Results');
+                resultFrame.setAttribute('width', '100%');
+                resultFrame.setAttribute('height', '200px');
+                resultFrame.setAttribute('frameborder', '0');
+                resultFrame.setAttribute('scrolling', 'no');
+                resultFrame.setAttribute('data-crawler-path', '/crawler_table/images/');
+            }
+        }
+
+        // Initialize result frame when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setupResultFrame();
+        });
+
+        // Add some attributes to the main body for styling
+        document.body.setAttribute('data-crawler-theme', 'dark');
+        document.body.setAttribute('data-management-system', 'crawler');
+        document.body.setAttribute('data-interactive', 'true');
+        document.body.setAttribute('data-path', '/crawler_table/templates/crawler_table.html');
+    </script>
+</body>
+</html>

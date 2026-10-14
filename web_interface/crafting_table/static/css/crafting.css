@@ -1,0 +1,60 @@
+/* Crafting table CSS */
+.crafting-table {
+    background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.recipe-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.ingredient {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    padding: 2px 8px;
+    margin: 2px;
+    font-size: 0.9em;
+}
+
+.craft-btn {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.craft-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
+
+.inventory-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+    margin: 5px;
+    text-align: center;
+}
+
+.crafting-progress {
+    height: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
+}

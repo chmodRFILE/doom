@@ -1,0 +1,140 @@
+/* Spider Crafting Table CSS */
+.spider-frame {
+    border: 3px solid #8B4513;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2c1810 0%, #1a120d 100%);
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.7);
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.spider-header {
+    background: linear-gradient(to right, #8B4513, #A0522D, #8B4513);
+    color: #FFD700;
+    padding: 15px;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.spider-footer {
+    background: linear-gradient(to right, #2c1810, #4a2c1d);
+    color: #FFD700;
+    padding: 10px;
+    border-radius: 0 0 8px 8px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.spider-button {
+    background: linear-gradient(45deg, #8B4513, #A0522D);
+    color: #FFD700;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.spider-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.spider-button:disabled {
+    background: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.ingredient-item {
+    background: rgba(139, 69, 19, 0.3);
+    border: 1px solid #A0522D;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 5px;
+    text-align: center;
+    font-size: 0.9em;
+    display: inline-block;
+    min-width: 100px;
+}
+
+.recipe-card {
+    background: rgba(44, 24, 16, 0.7);
+    border: 1px solid #A0522D;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.recipe-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(139, 69, 19, 0.5);
+    background: rgba(44, 24, 16, 0.9);
+}
+
+.crafting-progress {
+    height: 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+    background: #333;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #FF6B6B, #EE5A24);
+    transition: width 0.5s ease;
+    width: 0%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .spider-frame {
+        margin: 10px 0;
+    }
+    
+    .spider-header h1 {
+        font-size: 1.5em;
+    }
+    
+    .ingredient-item {
+        min-width: 80px;
+        font-size: 0.8em;
+    }
+    
+    .spider-button {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+}
+
+/* Animation for crafting */
+@keyframes craftAnimation {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.crafting-animation {
+    animation: craftAnimation 0.5s ease-in-out;
+}
+
+/* Web interface attributes */
+[data-spider-theme="dark"] {
+    background-color: #1a120d;
+}
+
+[data-crafting-system="spider"] {
+    border: 2px solid #8B4513;
+}
+
+[data-interactive="true"] {
+    cursor: pointer;
+}

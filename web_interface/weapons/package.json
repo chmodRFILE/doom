@@ -1,0 +1,13 @@
+{
+  "name": "weapons",
+  "version": "1.0.0",
+  "description": "Weapon system for webserver",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["weapon", "game", "web"],
+  "author": "WebServer Team",
+  "license": "MIT"
+}

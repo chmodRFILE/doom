@@ -1,0 +1,105 @@
+{
+  "routes": [
+    {
+      "id": "test-route-1",
+      "target_domains": [
+        "example.com",
+        "test.org"
+      ],
+      "user_agent": "TestSpider/1.0",
+      "delay_range": [
+        1,
+        3
+      ],
+      "max_retries": 3,
+      "proxies": [
+        "proxy1.example.com:8080"
+      ]
+    },
+    {
+      "id": "test-route-1",
+      "target_domains": [
+        "example.com",
+        "test.org"
+      ],
+      "user_agent": "TestSpider/1.0",
+      "delay_range": [
+        1,
+        3
+      ],
+      "max_retries": 3,
+      "proxies": [
+        "proxy1.example.com:8080"
+      ]
+    },
+    {
+      "id": "route-1791901114",
+      "target_domains": [
+        "example.com",
+        "test.org"
+      ],
+      "user_agent": "CustomSpider/1.0",
+      "delay_range": [
+        2,
+        4
+      ],
+      "max_retries": 5,
+      "proxies": [
+        "proxy1.example.com:8080"
+      ],
+      "priority": 0
+    },
+    {
+      "id": "test-route-1",
+      "target_domains": [
+        "example.com",
+        "test.org"
+      ],
+      "user_agent": "TestSpider/1.0",
+      "delay_range": [
+        1,
+        3
+      ],
+      "max_retries": 3,
+      "proxies": [
+        "proxy1.example.com:8080"
+      ]
+    },
+    {
+      "id": "route-1791963554",
+      "target_domains": [
+        "example.com",
+        "test.org"
+      ],
+      "user_agent": "CustomSpider/1.0",
+      "delay_range": [
+        2,
+        4
+      ],
+      "max_retries": 5,
+      "proxies": [
+        "proxy1.example.com:8080"
+      ],
+      "priority": 0
+    }
+  ],
+  "version": 1,
+  "last_updated": "2026-10-14T09:39:14.165701",
+  "validation": {
+    "enabled": true,
+    "rules": [
+      {
+        "type": "domain_format",
+        "enabled": true
+      },
+      {
+        "type": "proxy_format",
+        "enabled": true
+      },
+      {
+        "type": "user_agent_valid",
+        "enabled": true
+      }
+    ]
+  }
+}

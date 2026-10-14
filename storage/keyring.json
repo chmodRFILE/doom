@@ -1,0 +1,38 @@
+{
+  "master_keys": {
+    "master_1": {
+      "key_id": "master_1",
+      "type": "symmetric",
+      "algorithm": "AES-256",
+      "key": "ae621c43f558b00812facfc174775c0820901c38843f0d88b4b58c657bd055dc",
+      "key_b64": "rmIcQ/VYsAgS+s/BdHdcCCCQHDiEPw2ItLWMZXvQVdw=",
+      "created_at": "2026-10-14T11:17:54.422604",
+      "expires_at": null,
+      "status": "active"
+    },
+    "spider_1": {
+      "key_id": "spider_1",
+      "type": "symmetric",
+      "algorithm": "AES-256",
+      "key": "3b66c0ee8b7357aea246d79b1c063542cc3c54b2087131ae4ba4ffd5c3615f8a",
+      "key_b64": "O2bA7otzV66iRtebHAY1Qsw8VLIIcTGuS6T/1cNhX4o=",
+      "created_at": "2026-10-14T11:17:54.422886",
+      "expires_at": null,
+      "status": "active"
+    },
+    "test_key_1": {
+      "key_id": "test_key_1",
+      "type": "symmetric",
+      "algorithm": "AES-256",
+      "key": "f3761939cdb4e5b74c85b358cbb137ea6a0750191003119342b57da9c556c1f3",
+      "key_b64": "83YZOc205bdMhbNYy7E36moHUBkQAxGTQrV9qcVWwfM=",
+      "created_at": "2026-10-14T09:39:36.436908",
+      "expires_at": null,
+      "status": "active"
+    }
+  },
+  "spider_keys": {},
+  "c2_keys": {},
+  "timestamp": "2026-10-14T11:17:54.422894",
+  "version": "1.0"
+}

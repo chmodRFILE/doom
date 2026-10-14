@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spider Crafting Table</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/advanced_spider_crafting.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Spider Crafting Table</h1>
+        
+        <div class="crafting-info">
+            <p>Erstelle verschiedene Spiders mit den verfügbaren Materialien. Verbessere deine Spiders durch Crafting und Upgrade.</p>
+        </div>
+
+        <div class="crafting-table">
+            <h2>Verfügbare Rezepte</h2>
+            
+            <div id="recipes-container" class="recipes-container">
+                <!-- Rezepte werden dynamisch geladen -->
+            </div>
+        </div>
+
+        <div class="inventory">
+            <h2>Dein Inventar</h2>
+            <div id="inventory-items" class="inventory-items">
+                <!-- Inventar wird dynamisch geladen -->
+            </div>
+        </div>
+
+        <div class="spiders-section">
+            <h2>Erzeugte Spiders</h2>
+            <div id="spiders-container" class="spiders-container">
+                <!-- Erzeugte Spiders werden hier angezeigt -->
+            </div>
+        </div>
+
+        <div class="player-skills">
+            <h2>Spieler-Fähigkeiten</h2>
+            <div id="skills-container" class="skills-container">
+                <!-- Spieler-Fähigkeiten werden hier angezeigt -->
+            </div>
+        </div>
+
+        <div class="crafting-actions">
+            <button id="craft-all-btn" onclick="craftAllRecipes()">Alle Rezepte herstellen</button>
+            <button id="reset-inventory-btn" onclick="resetInventory()">Inventar zurücksetzen</button>
+        </div>
+
+        <div id="status-message" class="status-message"></div>
+    </div>
+
+    <script>
+        // Lade die Rezepte beim Seitenstart
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRecipes();
+            loadInventory();
+            loadSpiders();
+            loadPlayerSkills();
+        });
+    </script>
+</body>
+</html>

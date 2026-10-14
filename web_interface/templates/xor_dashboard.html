@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doom Spider Network - XOR Encryption Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dashboard-card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-active {
+            background-color: #28a745;
+        }
+        .status-inactive {
+            background-color: #dc3545;
+        }
+        .status-warning {
+            background-color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <header class="py-4 mb-4 border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Doom Spider Network - XOR Encryption Dashboard</h1>
+                <a href="/" class="btn btn-outline-secondary">Back to Main</a>
+            </div>
+        </header>
+
+        <!-- Status Overview -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">System Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="status-content">
+                            <p>Loading system status...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Management -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Key Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Generate New Key</h6>
+                                <form id="generate-key-form">
+                                    <div class="mb-3">
+                                        <label for="key-id" class="form-label">Key ID</label>
+                                        <input type="text" class="form-control" id="key-id" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="key-type" class="form-label">Key Type</label>
+                                        <select class="form-select" id="key-type">
+                                            <option value="symmetric">Symmetric</option>
+                                            <option value="asymmetric">Asymmetric</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Generate Key</button>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Key Information</h6>
+                                <div id="key-info">
+                                    <p>Enter a key ID to view details</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roll Management -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Roll Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Create New Roll</h6>
+                                <form id="create-roll-form">
+                                    <div class="mb-3">
+                                        <label for="roll-target" class="form-label">Target ID</label>
+                                        <input type="text" class="form-control" id="roll-target" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="roll-key" class="form-label">Key ID</label>
+                                        <input type="text" class="form-control" id="roll-key" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Create Roll</button>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Active Rolls</h6>
+                                <div id="active-rolls">
+                                    <p>Loading active rolls...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Encryption Test -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Encryption Test</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Encrypt Data</h6>
+                                <form id="encrypt-form">
+                                    <div class="mb-3">
+                                        <label for="encrypt-data" class="form-label">Data to Encrypt</label>
+                                        <textarea class="form-control" id="encrypt-data" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="encrypt-salt" class="form-label">Salt (optional)</label>
+                                        <input type="text" class="form-control" id="encrypt-salt">
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Encrypt</button>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Decrypt Data</h6>
+                                <form id="decrypt-form">
+                                    <div class="mb-3">
+                                        <label for="decrypt-data" class="form-label">Data to Decrypt</label>
+                                        <textarea class="form-control" id="decrypt-data" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="decrypt-salt" class="form-label">Salt</label>
+                                        <input type="text" class="form-control" id="decrypt-salt" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Decrypt</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div id="encryption-result" class="alert alert-info" style="display: none;">
+                                    <strong>Result:</strong> <span id="result-text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Load system status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemStatus();
+            loadActiveRolls();
+            
+            // Setup form submissions
+            setupFormSubmissions();
+        });
+
+        function loadSystemStatus() {
+            fetch('/xor/status')
+                .then(response => response.json())
+                .then(data => {
+                    const statusContent = document.getElementById('status-content');
+                    if (data.error) {
+                        statusContent.innerHTML = `<p class="text-danger">Error: ${data.error}</p>`;
+                        return;
+                    }
+                    
+                    let html = `
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6>Keyring Status</h6>
+                                <p><span class="status-indicator status-active"></span> Keys: ${data.keyring.keys_count}</p>
+                                <p>Updated: ${data.keyring.timestamp}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Roll Architecture</h6>
+                                <p><span class="status-indicator status-active"></span> Active Rolls: ${data.roll_architecture.active_rolls}</p>
+                                <p>Total Rolls: ${data.roll_architecture.total_rolls}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Encryption System</h6>
+                                <p><span class="status-indicator status-active"></span> Status: Active</p>
+                            </div>
+                        </div>
+                    `;
+                    statusContent.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading system status:', error);
+                    document.getElementById('status-content').innerHTML = 
+                        '<p class="text-danger">Failed to load system status</p>';
+                });
+        }
+
+        function loadActiveRolls() {
+            // In a real implementation, we would fetch the actual rolls
+            const activeRolls = document.getElementById('active-rolls');
+            activeRolls.innerHTML = `
+                <div class="alert alert-info">
+                    <strong>Roll Management:</strong> Rolls are automatically managed by the system.
+                    Each target gets its own encryption roll with unique salts for enhanced security.
+                </div>
+            `;
+        }
+
+        function setupFormSubmissions() {
+            // Generate Key Form
+            document.getElementById('generate-key-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                generateKey();
+            });
+
+            // Create Roll Form
+            document.getElementById('create-roll-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                createRoll();
+            });
+
+            // Encrypt Form
+            document.getElementById('encrypt-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                encryptData();
+            });
+
+            // Decrypt Form
+            document.getElementById('decrypt-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                decryptData();
+            });
+        }
+
+        function generateKey() {
+            const keyId = document.getElementById('key-id').value;
+            const keyType = document.getElementById('key-type').value;
+            
+            fetch('/xor/keys/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    key_id: keyId,
+                    key_type: keyType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+                
+                alert('Key generated successfully!');
+                document.getElementById('key-id').value = '';
+                // Update key info display
+                showKeyInfo(keyId);
+            })
+            .catch(error => {
+                console.error('Error generating key:', error);
+                alert('Failed to generate key');
+            });
+        }
+
+        function showKeyInfo(keyId) {
+            fetch(`/xor/keys/${keyId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('key-info').innerHTML = 
+                            `<p class="text-danger">Error: ${data.error}</p>`;
+                        return;
+                    }
+                    
+                    const keyInfo = document.getElementById('key-info');
+                    keyInfo.innerHTML = `
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>${data.key_id}</h6>
+                                <p><strong>Type:</strong> ${data.type}</p>
+                                <p><strong>Algorithm:</strong> ${data.algorithm}</p>
+                                <p><strong>Status:</strong> ${data.status}</p>
+                                <p><strong>Created:</strong> ${data.created_at}</p>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error getting key info:', error);
+                    document.getElementById('key-info').innerHTML = 
+                        '<p class="text-danger">Failed to load key information</p>';
+                });
+        }
+
+        function createRoll() {
+            const targetId = document.getElementById('roll-target').value;
+            const keyId = document.getElementById('roll-key').value;
+            
+            fetch('/xor/rolls/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    target_id: targetId,
+                    key_id: keyId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+                
+                alert('Roll created successfully!');
+                document.getElementById('roll-target').value = '';
+                document.getElementById('roll-key').value = '';
+                loadActiveRolls();
+            })
+            .catch(error => {
+                console.error('Error creating roll:', error);
+                alert('Failed to create roll');
+            });
+        }
+
+        function encryptData() {
+            const data = document.getElementById('encrypt-data').value;
+            const salt = document.getElementById('encrypt-salt').value;
+            
+            fetch('/xor/encrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: data,
+                    salt: salt
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+                
+                showResult('Encrypted Data', data.encrypted_data);
+            })
+            .catch(error => {
+                console.error('Error encrypting data:', error);
+                alert('Failed to encrypt data');
+            });
+        }
+
+        function decryptData() {
+            const data = document.getElementById('decrypt-data').value;
+            const salt = document.getElementById('decrypt-salt').value;
+            
+            fetch('/xor/decrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: data,
+                    salt: salt
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+                
+                showResult('Decrypted Data', data.decrypted_data);
+            })
+            .catch(error => {
+                console.error('Error decrypting data:', error);
+                alert('Failed to decrypt data');
+            });
+        }
+
+        function showResult(title, text) {
+            const resultDiv = document.getElementById('encryption-result');
+            document.getElementById('result-text').textContent = text;
+            resultDiv.style.display = 'block';
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                resultDiv.style.display = 'none';
+            }, 10000);
+        }
+    </script>
+</body>
+</html>

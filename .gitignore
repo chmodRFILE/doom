@@ -1,0 +1,26 @@
+# Bytecode
+*.pyc
+__pycache__/
+
+# Environment
+.env
+venv/
+.env.local
+
+# Ide
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# SQLite databases (unless tracked)
+*.db
+
+# Output files
+dist/
+build/

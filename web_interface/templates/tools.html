@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool-Interface</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Network Tools Interface</h1>
+        
+        <!-- Status-Anzeige -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Tool Status</h3>
+            </div>
+            <div class="card-body">
+                <div id="tool-status" class="row">
+                    <!-- Tool-Status wird hier dynamisch eingefügt -->
+                </div>
+            </div>
+        </div>
+
+        <!-- nmap Scan Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>nmap Scan</h3>
+            </div>
+            <div class="card-body">
+                <form id="nmap-form">
+                    <div class="mb-3">
+                        <label for="nmap-target" class="form-label">Target (IP/Hostname)</label>
+                        <input type="text" class="form-control" id="nmap-target" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nmap-options" class="form-label">Options</label>
+                        <input type="text" class="form-control" id="nmap-options" value="-sS">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Scan Starten</button>
+                </form>
+                <div id="nmap-result" class="mt-3"></div>
+            </div>
+        </div>
+
+        <!-- nslookup Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>nslookup</h3>
+            </div>
+            <div class="card-body">
+                <form id="nslookup-form">
+                    <div class="mb-3">
+                        <label for="nslookup-domain" class="form-label">Domain</label>
+                        <input type="text" class="form-control" id="nslookup-domain" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nslookup-server" class="form-label">DNS Server (optional)</label>
+                        <input type="text" class="form-control" id="nslookup-server">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lookup Starten</button>
+                </form>
+                <div id="nslookup-result" class="mt-3"></div>
+            </div>
+        </div>
+
+        <!-- nping Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>nping</h3>
+            </div>
+            <div class="card-body">
+                <form id="nping-form">
+                    <div class="mb-3">
+                        <label for="nping-target" class="form-label">Target IP</label>
+                        <input type="text" class="form-control" id="nping-target" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nping-options" class="form-label">Options</label>
+                        <input type="text" class="form-control" id="nping-options" value="-c 1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ping Starten</button>
+                </form>
+                <div id="nping-result" class="mt-3"></div>
+            </div>
+        </div>
+
+        <!-- proxychains Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>proxychains</h3>
+            </div>
+            <div class="card-body">
+                <form id="proxychains-form">
+                    <div class="mb-3">
+                        <label for="proxychains-command" class="form-label">Command (space separated)</label>
+                        <input type="text" class="form-control" id="proxychains-command" placeholder="e.g. curl google.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="proxychains-config" class="form-label">Proxy Config Path</label>
+                        <input type="text" class="form-control" id="proxychains-config" value="/etc/proxychains/proxychains.conf">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ausführen mit Proxychains</button>
+                </form>
+                <div id="proxychains-result" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Tool Status laden
+        function loadToolStatus() {
+            fetch('/api/tools/status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const statusDiv = document.getElementById('tool-status');
+                        statusDiv.innerHTML = '';
+                        for (const [tool, status] of Object.entries(data.data)) {
+                            const statusBadge = status ? 'bg-success' : 'bg-danger';
+                            const statusText = status ? 'Verfügbar' : 'Nicht verfügbar';
+                            
+                            statusDiv.innerHTML += `
+                                <div class="col-md-3 mb-2">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5>${tool}</h5>
+                                            <span class="badge ${statusBadge}">${statusText}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                })
+                .catch(error => console.error('Fehler beim Laden des Tool-Status:', error));
+        }
+
+        // nmap Scan ausführen
+        document.getElementById('nmap-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const target = document.getElementById('nmap-target').value;
+            const options = document.getElementById('nmap-options').value;
+            
+            fetch('/api/tools/nmap', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    target: target,
+                    options: options
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('nmap-result');
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <h5>Erfolg!</h5>
+                            <p><strong>Befehl:</strong> ${data.data.command}</p>
+                            <p><strong>Rückgabecode:</strong> ${data.data.returncode}</p>
+                            <p><strong>Ausgabedatei:</strong> ${data.data.output_file}</p>
+                            <h6>STDOUT:</h6>
+                            <pre>${data.data.stdout}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h5>Fehler!</h5>
+                            <p>${data.error}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Fehler:', error);
+                document.getElementById('nmap-result').innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5>Fehler beim Ausführen des nmap-Scans</h5>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            });
+        });
+
+        // nslookup ausführen
+        document.getElementById('nslookup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const domain = document.getElementById('nslookup-domain').value;
+            const server = document.getElementById('nslookup-server').value;
+            
+            fetch('/api/tools/nslookup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    domain: domain,
+                    server: server || null
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('nslookup-result');
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <h5>Erfolg!</h5>
+                            <p><strong>Befehl:</strong> ${data.data.command}</p>
+                            <p><strong>Rückgabecode:</strong> ${data.data.returncode}</p>
+                            <h6>STDOUT:</h6>
+                            <pre>${data.data.stdout}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h5>Fehler!</h5>
+                            <p>${data.error}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Fehler:', error);
+                document.getElementById('nslookup-result').innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5>Fehler beim Ausführen von nslookup</h5>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            });
+        });
+
+        // nping ausführen
+        document.getElementById('nping-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const target = document.getElementById('nping-target').value;
+            const options = document.getElementById('nping-options').value;
+            
+            fetch('/api/tools/nping', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    target: target,
+                    options: options
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('nping-result');
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <h5>Erfolg!</h5>
+                            <p><strong>Befehl:</strong> ${data.data.command}</p>
+                            <p><strong>Rückgabecode:</strong> ${data.data.returncode}</p>
+                            <h6>STDOUT:</h6>
+                            <pre>${data.data.stdout}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h5>Fehler!</h5>
+                            <p>${data.error}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Fehler:', error);
+                document.getElementById('nping-result').innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5>Fehler beim Ausführen von nping</h5>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            });
+        });
+
+        // proxychains ausführen
+        document.getElementById('proxychains-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const command = document.getElementById('proxychains-command').value.split(' ');
+            const config = document.getElementById('proxychains-config').value;
+            
+            fetch('/api/tools/proxychains', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    command: command,
+                    proxy_config: config
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('proxychains-result');
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <h5>Erfolg!</h5>
+                            <p><strong>Befehl:</strong> ${data.data.command}</p>
+                            <p><strong>Rückgabecode:</strong> ${data.data.returncode}</p>
+                            <h6>STDOUT:</h6>
+                            <pre>${data.data.stdout}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h5>Fehler!</h5>
+                            <p>${data.error}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Fehler:', error);
+                document.getElementById('proxychains-result').innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5>Fehler beim Ausführen mit proxychains</h5>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            });
+        });
+
+        // Tool Status beim Laden der Seite laden
+        loadToolStatus();
+    </script>
+</body>
+</html>

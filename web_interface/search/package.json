@@ -1,0 +1,13 @@
+{
+  "name": "search-engine",
+  "version": "1.0.0",
+  "description": "Search and indexing system for Doom content",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["search", "indexing", "doom", "web"],
+  "author": "WebServer Team",
+  "license": "MIT"
+}

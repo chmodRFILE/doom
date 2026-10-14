@@ -1,0 +1,23 @@
+{
+  "xor_system": {
+    "encryption_algorithm": "xor_salting",
+    "salt_length": 32,
+    "key_rotation_interval": 86400,
+    "roll_history_limit": 1000,
+    "max_key_storage": 100,
+    "security_level": "high"
+  },
+  "keyring": {
+    "storage_path": "storage/keyring.json",
+    "default_keys": {
+      "master_key": "default_master_key_1234567890",
+      "c2_key": "c2_key_1234567890",
+      "spider_key": "spider_key_1234567890"
+    }
+  },
+  "roll_architecture": {
+    "default_roll_duration": 3600,
+    "roll_rotation_enabled": true,
+    "audit_logging": true
+  }
+}

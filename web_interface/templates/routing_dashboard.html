@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Routing Engine Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Dynamic Routing Engine Dashboard</h1>
+        
+        <div class="stats-card">
+            <h2>Engine Statistics</h2>
+            <div id="stats-content">
+                <p>Loading statistics...</p>
+            </div>
+        </div>
+        
+        <div class="routes-section">
+            <h2>Routing Configuration</h2>
+            <button onclick="loadRoutes()">Refresh Routes</button>
+            <div id="routes-content">
+                <p>Loading routes...</p>
+            </div>
+        </div>
+        
+        <div class="add-route-form">
+            <h2>Add New Route</h2>
+            <form id="routeForm">
+                <input type="text" id="targetDomains" placeholder="Target Domains (comma separated)" required><br><br>
+                <input type="text" id="userAgent" placeholder="User Agent"><br><br>
+                <input type="number" id="delayRangeMin" placeholder="Min Delay"><br><br>
+                <input type="number" id="delayRangeMax" placeholder="Max Delay"><br><br>
+                <input type="number" id="maxRetries" placeholder="Max Retries"><br><br>
+                <textarea id="proxies" placeholder="Proxies (one per line)"></textarea><br><br>
+                <button type="submit">Add Route</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Load statistics
+        function loadStats() {
+            fetch('/routing/stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const statsContent = document.getElementById('stats-content');
+                        const stats = data.stats;
+                        statsContent.innerHTML = `
+                            <p>Version: ${stats.version}</p>
+                            <p>Total Routes: ${stats.route_count}</p>
+                            <p>Last Updated: ${stats.last_updated}</p>
+                        `;
+                    }
+                })
+                .catch(error => console.error('Error loading stats:', error));
+        }
+
+        // Load routes
+        function loadRoutes() {
+            fetch('/routing/routes')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const routesContent = document.getElementById('routes-content');
+                        if (data.routes.length === 0) {
+                            routesContent.innerHTML = '<p>No routes configured.</p>';
+                            return;
+                        }
+                        
+                        let html = '<ul>';
+                        data.routes.forEach(route => {
+                            html += `<li><strong>${route.id || 'Unnamed Route'}</strong>: ${route.target_domains?.join(', ') || 'No domains'}</li>`;
+                        });
+                        html += '</ul>';
+                        routesContent.innerHTML = html;
+                    }
+                })
+                .catch(error => console.error('Error loading routes:', error));
+        }
+
+        // Handle form submission
+        document.getElementById('routeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const routeData = {
+                target_domains: document.getElementById('targetDomains').value.split(',').map(d => d.trim()),
+                user_agent: document.getElementById('userAgent').value,
+                delay_range: [
+                    parseInt(document.getElementById('delayRangeMin').value) || 1,
+                    parseInt(document.getElementById('delayRangeMax').value) || 3
+                ],
+                max_retries: parseInt(document.getElementById('maxRetries').value) || 3,
+                proxies: document.getElementById('proxies').value.split('\n').filter(p => p.trim())
+            };
+            
+            fetch('/routing/routes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(routeData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Route added successfully!');
+                    loadRoutes();
+                    // Reset form
+                    document.getElementById('routeForm').reset();
+                } else {
+                    alert('Error adding route: ' + data.error);
+                }
+            })
+            .catch(error => console.error('Error adding route:', error));
+        });
+
+        // Load initial data
+        loadStats();
+        loadRoutes();
+    </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Beispiel-Proxy-Liste (leer, da keine echten Proxies verwendet werden)
+# In einer echten Anwendung würden hier die Proxy-Server eingetragen sein
+# proxy1.example.com:8080
+# proxy2.example.com:3128

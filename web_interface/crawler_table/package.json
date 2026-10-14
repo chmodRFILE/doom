@@ -1,0 +1,24 @@
+{
+  "name": "crawler-management-table",
+  "version": "1.0.0",
+  "description": "Crawler management table for Doom web interface",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "path": "^0.12.7"
+  },
+  "keywords": [
+    "crawler",
+    "spider",
+    "management",
+    "doom",
+    "web-interface"
+  ],
+  "author": "Doom Web Interface Team",
+  "license": "MIT"
+}

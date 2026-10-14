@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Crawler Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Random Crawler Generator</h1>
+        <p>Generate random crawlers that can flood web server parts like CSS, PHP, JS, and classes.</p>
+        
+        <div id="crawler-config">
+            <h2>Configuration</h2>
+            <button onclick="generateCrawler()">Generate Random Crawler</button>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/random_crawler.js') }}"></script>
+</body>
+</html>

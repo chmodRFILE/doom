@@ -1,0 +1,16 @@
+{
+  "name": "crafting-table",
+  "version": "1.0.0",
+  "description": "Spider crafting table system for webserver",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["crafting", "spider", "game", "web", "table"],
+  "author": "WebServer Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.0"
+  }
+}
